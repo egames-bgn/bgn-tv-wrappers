@@ -23,25 +23,22 @@ pipeline {
             when { expression { shouldRun('Tizen') } }
             environment {
                 TIZEN_CERT_PASSWORD = credentials('tizen-cert-password')
-                ENV_FILE_CONTENT    = credentials('tizen-dotenv') /* Optional: if you keep the .env file encrypted in Jenkins credentials */
             }
             steps {
-                dir(env.BASE_DIR) {
-                    sh 'make tizen-all'
-                    archiveArtifacts artifacts: 'tizen/*.wgt'
+                sh 'make tizen-all'
+                archiveArtifacts artifacts: 'tizen/*.wgt'
 
-                    withCredentials([usernamePassword(
-                            credentialsId: 'samsung-seller-api',
-                            usernameVariable: 'SS_USER',
-                            passwordVariable: 'SS_PASS')]) {
-                        sh '''
-                           source tizen/.tv.env
-                           tizen-cli upload --app-id "${TIZEN_APP_ID}" \
-                                            --file "tizen/${TIZEN_WGT_NAME}" \
-                                            --user "${SS_USER}" --pass "${SS_PASS}" \
-                                            --channel beta
-                        '''
-                    }
+                withCredentials([usernamePassword(
+                        credentialsId: 'samsung-seller-api',
+                        usernameVariable: 'SS_USER',
+                        passwordVariable: 'SS_PASS')]) {
+                    sh '''
+                       source tizen/.tv.env
+                       tizen-cli upload --app-id "${TIZEN_APP_ID}" \
+                                        --file "tizen/${TIZEN_WGT_NAME}" \
+                                        --user "${SS_USER}" --pass "${SS_PASS}" \
+                                        --channel beta
+                    '''
                 }
             }
         }
