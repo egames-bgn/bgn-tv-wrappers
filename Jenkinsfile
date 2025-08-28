@@ -1,6 +1,6 @@
 pipeline {
     /* Replace with a node or label that has Tizen Studio CLI. and more as they are added/ required */
-    agent { label 'AGENT' }
+    agent none
 
     parameters {
         choice(
