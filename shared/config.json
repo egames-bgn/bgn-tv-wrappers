@@ -1,0 +1,11 @@
+{
+  "appBaseUrl": "https://tv.buzztime.com",
+  "appBaseUrlDev": "https://tv.dev.buzztime.com",
+  "appName": "Buzztime TV",
+  "appVersion": "1.0.0",
+  "logLevel": "warn",
+  "featureFlags": {
+    "enableChromecast": false,
+    "enableAirPlay": false
+  }
+}
