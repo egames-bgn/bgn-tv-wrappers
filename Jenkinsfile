@@ -1,3 +1,7 @@
+def shouldRun(String platform) {
+    return params.PLATFORMS_TO_BUILD.contains(platform)
+}
+
 pipeline {
     /* Replace with a node or label that has Tizen Studio CLI. and more as they are added/ required */
     agent none
@@ -8,10 +12,6 @@ pipeline {
             choices: ['Tizen', 'WebOS', 'AndroidTV', 'tvOS', 'Roku', 'NONE'],
             description: 'Comma-separated list of wrappers to build/deploy'
         )
-    }
-
-    boolean shouldRun(String platform) {
-        return params.PLATFORMS_TO_BUILD.contains(platform)
     }
 
     environment {
