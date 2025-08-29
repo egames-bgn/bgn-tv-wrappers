@@ -4,20 +4,38 @@ boolean shouldRun(String platform) {
     return selected.toString().tokenize(',').contains(platform)
 }
 
+properties([
+  parameters([
+    [
+      $class: 'CascadeChoiceParameter',
+      choiceType: 'PT_CHECKBOX',
+      name: 'PLATFORMS_TO_BUILD',
+      description: 'Select the platform(s) to build',
+      filterLength: 1,
+      filterable: false,
+      script: [
+        $class: 'GroovyScript',
+        script: [classpath: [], sandbox: false, script: 'return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]'],
+        fallbackScript: [classpath: [], sandbox: false, script: 'return ["Error"]']
+      ]
+    ]
+  ])
+])
+
 pipeline {
     /* Replace with a node or label that has Tizen Studio CLI. and more as they are added/ required */
     agent none
 
-    parameters {
-      activeChoiceParam('PLATFORMS_TO_BUILD') {
-        description('Select the platform(s) to build')
-        choiceType('CHECKBOX')
-        groovyScript {
-          script('return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]')
-          fallbackScript('return ["Error"]')
-        }
-      }
-    }
+//     parameters {
+//       activeChoiceParam('PLATFORMS_TO_BUILD') {
+//         description('Select the platform(s) to build')
+//         choiceType('CHECKBOX')
+//         groovyScript {
+//           script('return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]')
+//           fallbackScript('return ["Error"]')
+//         }
+//       }
+//     }
 
 //     parameters {
 //         choice(
