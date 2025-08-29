@@ -7,7 +7,7 @@ boolean shouldRun(String platform) {
 properties([
   parameters([
     [
-      $class: 'CascadeChoiceParameter',
+      $class: 'ChoiceParameter',
       choiceType: 'PT_CHECKBOX',
       name: 'PLATFORMS_TO_BUILD',
       description: 'Select the platform(s) to build',
