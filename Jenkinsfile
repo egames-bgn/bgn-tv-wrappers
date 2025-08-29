@@ -7,12 +7,33 @@ pipeline {
     agent none
 
     parameters {
-        choice(
-            name: 'PLATFORMS_TO_BUILD',
-            choices: ['Tizen', 'WebOS', 'AndroidTV', 'tvOS', 'Roku', 'NONE'],
-            description: 'Comma-separated list of wrappers to build/deploy'
-        )
+      activeChoice(
+          name: 'PLATFORMS_TO_BUILD',
+          type: 'PT_CHECKBOX',          // multi-select check-boxes
+          description: 'Select one or more platforms to build',
+          choiceType: 'ET_FORMATTED_HTML',
+          filterLength: 1,              // show filter box
+          filterable: true,
+          script: [
+            $class: 'GroovyScript',
+            script: [
+              classpath: [],
+              sandbox: true,
+              script: '''
+                return ["Tizen","WebOS","AndroidTV","tvOS","Roku"]
+              '''
+            ]
+          ]
+      )
     }
+
+//     parameters {
+//         choice(
+//             name: 'PLATFORMS_TO_BUILD',
+//             choices: ['Tizen', 'WebOS', 'AndroidTV', 'tvOS', 'Roku', 'NONE'],
+//             description: 'Comma-separated list of wrappers to build/deploy'
+//         )
+//     }
 
     environment {
         BASE_DIR = 'bgn-tv-wrappers'
