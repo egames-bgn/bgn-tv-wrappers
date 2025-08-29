@@ -8,7 +8,7 @@ pipeline {
     /* Replace with a node or label that has Tizen Studio CLI. and more as they are added/ required */
     agent none
 
-    properties([
+    options([
         parameters {
             [$class: 'ChoiceParameter',
              choiceType: 'PT_CHECKBOX',              // multi-select widget
