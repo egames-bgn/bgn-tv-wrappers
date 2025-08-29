@@ -8,7 +8,8 @@ pipeline {
     /* Replace with a node or label that has Tizen Studio CLI. and more as they are added/ required */
     agent none
 
-    parameters {
+    properties([
+        parameters {
             [$class: 'ChoiceParameter',
              choiceType: 'PT_CHECKBOX',              // multi-select widget
              description: 'Select the platform(s) to build',
@@ -32,6 +33,8 @@ pipeline {
              ]
             ]
         }
+    ])
+
 
 //     parameters {
 //         choice(
