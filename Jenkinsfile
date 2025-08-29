@@ -1,60 +1,40 @@
 boolean shouldRun(String platform) {
-    def selected = params.PLATFORMS_TO_BUILD || null
-    if (selected == null) return false
-    return selected.toString().tokenize(',').contains(platform)
+    return params.PLATFORMS_TO_BUILD.split(',').collect { it.trim() }.contains(platform)
 }
-
-properties([
-    parameters {
-        [$class: 'ChoiceParameter',
-         choiceType: 'PT_CHECKBOX',              // multi-select widget
-         description: 'Select the platform(s) to build',
-         filterLength: 1,
-         filterable: false,
-         name: 'PLATFORMS_TO_BUILD',
-         script: [
-             $class: 'GroovyScript',
-             fallbackScript: [
-                 classpath: [],
-                 sandbox: true,
-                 script: 'return ["ERROR"]'
-             ],
-             script: [
-                 classpath: [],
-                 sandbox: true,
-                 script: '''
-                     return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]
-                 '''
-             ]
-         ]
-        ]
-    }
-
-//   parameters([
-//     [
-//       $class: 'ChoiceParameter',
-//       choiceType: 'PT_CHECKBOX',
-//       name: 'PLATFORMS_TO_BUILD',
-//       description: 'Select the platform(s) to build',
-//       filterLength: 1,
-//       filterable: false,
-//       script: [
-//         $class: 'GroovyScript',
-//         script: [classpath: [], sandbox: false, script: 'return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]'],
-//         fallbackScript: [classpath: [], sandbox: false, script: 'return ["Error"]']
-//       ]
-//     ]
-//   ])
-])
 
 pipeline {
     /* Replace with a node or label that has Tizen Studio CLI. and more as they are added/ required */
     agent none
 
+    parameters {
+        text(name: '_SECTION_',
+             defaultValue: '',
+             description: 'Select the platform(s) to build')
+
+        booleanParam(name: 'Tizen',    defaultValue: false, description: 'Tizen')
+        booleanParam(name: 'WebOS',    defaultValue: false, description: 'WebOS')
+        booleanParam(name: 'AndroidTV', defaultValue: false, description: 'AndroidTV')
+        booleanParam(name: 'tvOS',     defaultValue: false, description: 'tvOS')
+        booleanParam(name: 'Roku',     defaultValue: false, description: 'Roku')
+    }
+
+    /* Build the comma-separated list once, right after checkout */
+    environment {
+        PLATFORMS_TO_BUILD = """${{
+            def list = []
+            if (params.Tizen)    list << 'Tizen'
+            if (params.WebOS)    list << 'WebOS'
+            if (params.AndroidTV) list << 'AndroidTV'
+            if (params.tvOS)     list << 'tvOS'
+            if (params.Roku)     list << 'Roku'
+            list.join(',')
+        }}"""
+    }
+
 //     parameters {
 //         choice(
 //             name: 'PLATFORMS_TO_BUILD',
-//             choices: ['Tizen', 'WebOS', 'AndroidTV', 'tvOS', 'Roku', 'NONE'],
+//             choices: ['Tizen', 'WebOS', 'AndroidTV', 'tvOS', 'Roku'],
 //             description: 'Comma-separated list of wrappers to build/deploy'
 //         )
 //     }
