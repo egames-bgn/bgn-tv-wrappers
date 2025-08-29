@@ -1,5 +1,7 @@
-def shouldRun(String platform) {
-    return params.PLATFORMS_TO_BUILD.contains(platform)
+boolean shouldRun(String platform) {
+    def selected = params.PLATFORMS_TO_BUILD
+    if (selected == null) return false
+    return selected.toString().tokenize(',').contains(platform)
 }
 
 pipeline {
@@ -7,25 +9,29 @@ pipeline {
     agent none
 
     parameters {
-      activeChoice(
-          name: 'PLATFORMS_TO_BUILD',
-          type: 'PT_CHECKBOX',          // multi-select check-boxes
-          description: 'Select one or more platforms to build',
-          choiceType: 'ET_FORMATTED_HTML',
-          filterLength: 1,              // show filter box
-          filterable: true,
-          script: [
-            $class: 'GroovyScript',
-            script: [
-              classpath: [],
-              sandbox: true,
-              script: '''
-                return ["Tizen","WebOS","AndroidTV","tvOS","Roku"]
-              '''
+            [$class: 'ChoiceParameter',
+             choiceType: 'PT_CHECKBOX',              // multi-select widget
+             description: 'Select the platform(s) to build',
+             filterLength: 1,
+             filterable: false,
+             name: 'PLATFORMS_TO_BUILD',
+             script: [
+                 $class: 'GroovyScript',
+                 fallbackScript: [
+                     classpath: [],
+                     sandbox: true,
+                     script: 'return ["ERROR"]'
+                 ],
+                 script: [
+                     classpath: [],
+                     sandbox: true,
+                     script: '''
+                         return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]
+                     '''
+                 ]
+             ]
             ]
-          ]
-      )
-    }
+        }
 
 //     parameters {
 //         choice(
