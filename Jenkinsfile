@@ -5,37 +5,51 @@ boolean shouldRun(String platform) {
 }
 
 properties([
-  parameters([
-    [
-      $class: 'ChoiceParameter',
-      choiceType: 'PT_CHECKBOX',
-      name: 'PLATFORMS_TO_BUILD',
-      description: 'Select the platform(s) to build',
-      filterLength: 1,
-      filterable: false,
-      script: [
-        $class: 'GroovyScript',
-        script: [classpath: [], sandbox: false, script: 'return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]'],
-        fallbackScript: [classpath: [], sandbox: false, script: 'return ["Error"]']
-      ]
-    ]
-  ])
+    parameters {
+        [$class: 'ChoiceParameter',
+         choiceType: 'PT_CHECKBOX',              // multi-select widget
+         description: 'Select the platform(s) to build',
+         filterLength: 1,
+         filterable: false,
+         name: 'PLATFORMS_TO_BUILD',
+         script: [
+             $class: 'GroovyScript',
+             fallbackScript: [
+                 classpath: [],
+                 sandbox: true,
+                 script: 'return ["ERROR"]'
+             ],
+             script: [
+                 classpath: [],
+                 sandbox: true,
+                 script: '''
+                     return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]
+                 '''
+             ]
+         ]
+        ]
+    }
+
+//   parameters([
+//     [
+//       $class: 'ChoiceParameter',
+//       choiceType: 'PT_CHECKBOX',
+//       name: 'PLATFORMS_TO_BUILD',
+//       description: 'Select the platform(s) to build',
+//       filterLength: 1,
+//       filterable: false,
+//       script: [
+//         $class: 'GroovyScript',
+//         script: [classpath: [], sandbox: false, script: 'return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]'],
+//         fallbackScript: [classpath: [], sandbox: false, script: 'return ["Error"]']
+//       ]
+//     ]
+//   ])
 ])
 
 pipeline {
     /* Replace with a node or label that has Tizen Studio CLI. and more as they are added/ required */
     agent none
-
-//     parameters {
-//       activeChoiceParam('PLATFORMS_TO_BUILD') {
-//         description('Select the platform(s) to build')
-//         choiceType('CHECKBOX')
-//         groovyScript {
-//           script('return ["Tizen", "WebOS", "AndroidTV", "tvOS", "Roku"]')
-//           fallbackScript('return ["Error"]')
-//         }
-//       }
-//     }
 
 //     parameters {
 //         choice(
