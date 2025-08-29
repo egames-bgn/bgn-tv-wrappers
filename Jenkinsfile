@@ -1,5 +1,6 @@
 boolean shouldRun(String platform) {
-    return params.PLATFORMS_TO_BUILD.split(',').collect { it.trim() }.contains(platform)
+    def selected = env.PLATFORMS_TO_BUILD?.tokenize(',') ?: []
+    return selected.contains(platform)
 }
 
 pipeline {
@@ -18,32 +19,26 @@ pipeline {
         booleanParam(name: 'Roku',     defaultValue: false, description: 'Roku')
     }
 
-    /* Build the comma-separated list once, right after checkout */
-    environment {
-        PLATFORMS_TO_BUILD = """${{
-            def list = []
-            if (params.Tizen)    list << 'Tizen'
-            if (params.WebOS)    list << 'WebOS'
-            if (params.AndroidTV) list << 'AndroidTV'
-            if (params.tvOS)     list << 'tvOS'
-            if (params.Roku)     list << 'Roku'
-            list.join(',')
-        }}"""
-    }
-
-//     parameters {
-//         choice(
-//             name: 'PLATFORMS_TO_BUILD',
-//             choices: ['Tizen', 'WebOS', 'AndroidTV', 'tvOS', 'Roku'],
-//             description: 'Comma-separated list of wrappers to build/deploy'
-//         )
-//     }
-
     environment {
         BASE_DIR = 'bgn-tv-wrappers'
     }
 
     stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    def list = []
+                    if (params.Tizen)     list << 'Tizen'
+                    if (params.WebOS)     list << 'WebOS'
+                    if (params.AndroidTV) list << 'AndroidTV'
+                    if (params.tvOS)      list << 'tvOS'
+                    if (params.Roku)      list << 'Roku'
+                    env.PLATFORMS_TO_BUILD = list.join(',')
+                    echo "Selected platforms: ${env.PLATFORMS_TO_BUILD}"
+                }
+            }
+        }
+
         stage('Tizen build & deploy') {
             when { expression { shouldRun('Tizen') } }
             environment {
