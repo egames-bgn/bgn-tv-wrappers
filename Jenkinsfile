@@ -8,10 +8,6 @@ pipeline {
     agent none
 
     parameters {
-        text(name: '_SECTION_',
-             defaultValue: '',
-             description: 'Select the platform(s) to build')
-
         booleanParam(name: 'Tizen',    defaultValue: false, description: 'Tizen')
         booleanParam(name: 'WebOS',    defaultValue: false, description: 'WebOS')
         booleanParam(name: 'AndroidTV', defaultValue: false, description: 'AndroidTV')
