@@ -1,5 +1,5 @@
 boolean shouldRun(String platform) {
-    def selected = params.PLATFORMS_TO_BUILD
+    def selected = params.PLATFORMS_TO_BUILD || null
     if (selected == null) return false
     return selected.toString().tokenize(',').contains(platform)
 }
